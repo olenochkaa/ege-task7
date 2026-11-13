@@ -1,0 +1,955 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>ЕГЭ Профиль — Задание №7</title>
+
+<style>
+:root {
+  --bg: #101116;
+  --card: #24252d;
+  --card2: #2c2d36;
+  --border: rgba(255,255,255,.12);
+  --text: #f4f4f7;
+  --muted: #a3a5b2;
+  --green: #7ee8b2;
+  --red: #ff929e;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Arial, sans-serif;
+  background:
+    radial-gradient(ellipse at 80% 0%, #292b38, transparent 40%),
+    radial-gradient(ellipse at 0% 75%, #1f222c, transparent 40%),
+    var(--bg);
+  min-height: 100vh;
+}
+
+.container {
+  width: min(1140px, 100%);
+  margin: auto;
+  padding: 28px 20px 50px;
+}
+
+.glass {
+  background: rgba(255,255,255,.075);
+  border: 1px solid var(--border);
+  border-radius: 25px;
+  box-shadow:
+    0 12px 35px rgba(0,0,0,.12),
+    inset 0 1px 0 rgba(255,255,255,.08);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+header {
+  text-align: center;
+  padding: 52px 20px;
+  margin-bottom: 24px;
+}
+
+.tag {
+  display: inline-block;
+  background: rgba(255,255,255,.09);
+  border: 1px solid var(--border);
+  border-radius: 25px;
+  padding: 9px 18px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+h1 {
+  font-size: clamp(34px,5vw,55px);
+  letter-spacing: -2px;
+  margin: 20px 0 8px;
+}
+
+.subtitle {
+  font-size: 22px;
+  color: #c6c8d1;
+}
+
+.description {
+  color: var(--muted);
+  line-height: 1.6;
+  max-width: 630px;
+  margin: 15px auto 0;
+}
+
+.toolbar {
+  padding: 22px;
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.stats {
+  display: flex;
+  gap: 35px;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.stat strong {
+  font-size: 27px;
+}
+
+.stat span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+select {
+  border: 1px solid var(--border);
+  background: #30313b;
+  color: white;
+  padding: 14px;
+  border-radius: 12px;
+  font: inherit;
+  max-width: 100%;
+}
+
+.progress {
+  height: 6px;
+  background: #30313b;
+  border-radius: 30px;
+  overflow: hidden;
+  margin-bottom: 35px;
+}
+
+.progress-fill {
+  width: 0;
+  height: 100%;
+  background: linear-gradient(90deg,#858b9c,#f4f4f7);
+  transition: width .3s;
+}
+
+.section-title {
+  font-size: clamp(21px,3vw,28px);
+  letter-spacing: -.6px;
+  margin: 45px 0 20px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 18px;
+}
+
+.problem {
+  padding: 25px;
+  min-width: 0;
+  transition: border .2s;
+}
+
+.problem.correct {
+  border-color: rgba(126,232,178,.65);
+}
+
+.problem.wrong {
+  border-color: rgba(255,146,158,.6);
+}
+
+.problem-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.number {
+  display: inline-block;
+  padding: 8px 13px;
+  background: rgba(255,255,255,.1);
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  font-weight: 750;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.type-label {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.equation {
+  min-height: 145px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 22px 5px;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* Полноценная математическая вёрстка */
+.equation math {
+  display: block;
+  color: #f8f8fa;
+  font-family: "STIX Two Math", "Cambria Math",
+    "Latin Modern Math", "Times New Roman", serif;
+  font-size: clamp(23px,2.6vw,33px);
+  white-space: nowrap;
+}
+
+.answer-row {
+  display: flex;
+  gap: 10px;
+}
+
+.answer-input {
+  width: 100%;
+  min-width: 0;
+  flex: 1;
+  padding: 15px;
+  color: white;
+  background: rgba(0,0,0,.22);
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  outline: none;
+  font-size: 16px;
+}
+
+.answer-input:focus {
+  border-color: #bdc1cd;
+}
+
+button {
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+  transition: .2s;
+}
+
+button:hover {
+  transform: translateY(-2px);
+}
+
+.btn {
+  padding: 14px 20px;
+  border-radius: 13px;
+  border: 1px solid var(--border);
+}
+
+.btn-primary {
+  background: #e7e8ed;
+  color: #191a21;
+}
+
+.btn-secondary {
+  background: rgba(255,255,255,.08);
+  color: white;
+}
+
+.feedback {
+  min-height: 19px;
+  margin-top: 13px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.correct .feedback { color: var(--green); }
+.wrong .feedback { color: var(--red); }
+
+.actions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 24px;
+  margin: 35px 0;
+}
+
+.result {
+  display: none;
+  padding: 30px;
+  text-align: center;
+}
+
+.result h2 {
+  font-size: 30px;
+}
+
+.result p { color: var(--muted); }
+
+footer {
+  text-align: center;
+  margin-top: 45px;
+  padding: 30px 10px;
+}
+
+footer p {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+footer a {
+  display: inline-block;
+  margin-top: 10px;
+  text-decoration: none;
+  color: white;
+  background: rgba(255,255,255,.1);
+  border: 1px solid var(--border);
+  padding: 15px 27px;
+  border-radius: 30px;
+  font-weight: 750;
+}
+
+footer a:hover {
+  background: rgba(255,255,255,.18);
+}
+
+@media (max-width: 700px) {
+  .container { padding: 15px 12px; }
+  .grid { grid-template-columns: 1fr; }
+  .problem { padding: 20px; }
+  .equation { min-height: 120px; }
+  .equation math { font-size: 25px; }
+  .toolbar { align-items: stretch; }
+  .stats { justify-content: space-between; width: 100%; }
+  select { width: 100%; }
+}
+
+@media (max-width: 390px) {
+  .answer-row { flex-wrap: wrap; }
+  .answer-row button { width: 100%; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<header class="glass">
+  <div class="tag">ЕГЭ · ПРОФИЛЬНАЯ МАТЕМАТИКА</div>
+  <h1>Задание №7</h1>
+  <div class="subtitle">Простейшие уравнения</div>
+  <p class="description">
+    Интерактивный тренажёр по прототипам ЕГЭ.
+    Решай уравнения, вводи ответы и проверяй свои знания.
+  </p>
+</header>
+
+<div class="toolbar glass">
+  <div class="stats">
+    <div class="stat">
+      <strong id="totalCount">36</strong>
+      <span>Заданий</span>
+    </div>
+    <div class="stat">
+      <strong id="solvedCount">0</strong>
+      <span>Проверено</span>
+    </div>
+    <div class="stat">
+      <strong id="correctCount">0</strong>
+      <span>Правильно</span>
+    </div>
+  </div>
+
+  <select id="topicFilter">
+    <option value="all">Все типы уравнений</option>
+    <option value="linear">Линейные и степенные</option>
+    <option value="irrational">Иррациональные</option>
+    <option value="power">Показательные</option>
+    <option value="log">Логарифмические</option>
+  </select>
+</div>
+
+<div class="progress">
+  <div class="progress-fill" id="progressFill"></div>
+</div>
+
+<main id="tasksContainer"></main>
+
+<div class="actions glass">
+  <button class="btn btn-primary" id="checkAll">
+    Проверить заполненные
+  </button>
+  <button class="btn btn-secondary" id="resetAll">
+    Начать заново
+  </button>
+</div>
+
+<div class="result glass" id="finalResult">
+  <h2 id="resultTitle"></h2>
+  <p id="resultDescription"></p>
+</div>
+
+<footer>
+  <p>Больше материалов для подготовки к ЕГЭ</p>
+  <a href="https://t.me/pickme_math"
+     target="_blank"
+     rel="noopener noreferrer">
+    Telegram · @pickme_math ↗
+  </a>
+  <p>Профильная математика · Тренажёр</p>
+</footer>
+
+</div>
+
+<script>
+/*
+  МАТЕМАТИЧЕСКАЯ ВЁРСТКА MathML
+
+  В отличие от обычного HTML, MathML
+  правильно размещает целые показатели
+  степеней, основания логарифмов и дроби.
+
+  Работает без сторонних библиотек.
+*/
+
+const tag = (name, content) =>
+  `<${name}>${content}</${name}>`;
+
+const mn = text => tag("mn", text);
+const mi = text => tag("mi", text);
+const mo = text => tag("mo", text);
+const row = (...items) => tag("mrow", items.join(""));
+
+function lin(value) {
+  const text = String(value).replaceAll("−", "-");
+  const tokens = text.match(/\d+(?:[.,]\d+)?|x|[()+\-]/g) || [];
+
+  return row(...tokens.map(t => {
+    if (t === "x") return mi("x");
+    if (t === "-" || t === "+") {
+      return mo(t === "-" ? "−" : "+");
+    }
+    if (t === "(" || t === ")") return mo(t);
+    return mn(t);
+  }));
+}
+
+function node(value) {
+  const text = String(value);
+  return text.startsWith("<") ? text : lin(text);
+}
+
+const frac = (top, bottom) =>
+  tag("mfrac", node(top) + node(bottom));
+
+const par = content =>
+  row(mo("("), node(content), mo(")"));
+
+const power = (base, exponent) =>
+  tag("msup", node(base) + node(exponent));
+
+const log = (base, argument) =>
+  row(
+    tag("msub", mi("log") + mn(base)),
+    par(argument)
+  );
+
+const sqrt = argument =>
+  tag("msqrt", node(argument));
+
+const cbrt = argument =>
+  tag("mroot", node(argument) + mn(3));
+
+function eq(left, right) {
+  return `
+    <math xmlns="http://www.w3.org/1998/Math/MathML"
+          display="block">
+      <mrow>
+        ${node(left)}
+        <mo>=</mo>
+        ${node(right)}
+      </mrow>
+    </math>
+  `;
+}
+
+/*
+  ЗАДАНИЯ И ОТВЕТЫ
+  Номера сохранены как в исходном PDF.
+*/
+
+const groups = [
+{
+  id: "linear",
+  title: "Линейные, рациональные и степенные уравнения",
+  tasks: [
+    {
+      id: "1.1",
+      math: eq(
+        row(frac("3","8"), mi("x")),
+        row(mo("−"),mn("7"),frac("1","8"))
+      ),
+      answer: -19
+    },
+    {
+      id: "1.2",
+      math: eq(frac("1","5x+3"),frac("1","9")),
+      answer: 1.2
+    },
+    {
+      id: "1.3",
+      math: eq(frac("1","5x+8"),frac("1","2x-16")),
+      answer: -8
+    },
+    {
+      id: "2",
+      math: eq(frac("1","4x-2"),"5"),
+      answer: 0.55
+    },
+    {
+      id: "3.1",
+      math: eq(
+        power(par("3x-7"),"2"),
+        power(par("3x+1"),"2")
+      ),
+      answer: 1
+    },
+    {
+      id: "3.2",
+      math: eq(power(par("x+12"),"2"),"48x"),
+      answer: 12
+    },
+    {
+      id: "4.1",
+      math: eq(power(par("x-7"),"9"),"512"),
+      answer: 9
+    },
+    {
+      id: "4.2",
+      math: eq(power(par("x+2"),"3"),"-729"),
+      answer: -11
+    }
+  ]
+},
+{
+  id: "irrational",
+  title: "Иррациональные уравнения",
+  tasks: [
+    {
+      id:"5.1",
+      math:eq(sqrt("4x+24"),"8"),
+      answer:10
+    },
+    {
+      id:"5.2",
+      math:eq(sqrt("64-3x"),"7"),
+      answer:5
+    },
+    {
+      id:"5.5",
+      math:eq(cbrt("x+4"),"3"),
+      answer:23
+    },
+    {
+      id:"6",
+      math:eq(sqrt("21-4x"),"x"),
+      answer:3
+    }
+  ]
+},
+{
+  id: "power",
+  title: "Показательные уравнения",
+  tasks: [
+    {
+      id:"7.1",
+      math:eq(power("3","x+8"),"3"),
+      answer:-7
+    },
+    {
+      id:"7.2",
+      math:eq(power("9","x-6"),"81"),
+      answer:8
+    },
+    {
+      id:"7.3",
+      math:eq(power("2","-7+x"),"16"),
+      answer:11
+    },
+    {
+      id:"7.4",
+      math:eq(power("5","-1-x"),"25"),
+      answer:-3
+    },
+    {
+      id:"7.5",
+      math:eq(
+        power("2","9-4x"),
+        power("8","2x")
+      ),
+      answer:0.9
+    },
+    {
+      id:"7.6",
+      math:eq(
+        power("8","3+2x"),
+        power("64","2x")
+      ),
+      answer:1.5
+    },
+    {
+      id:"8.1",
+      math:eq(power("7","x-1"),frac("1","49")),
+      answer:-1
+    },
+    {
+      id:"8.2",
+      math:eq(
+        power(par(frac("1","4")),"x-5"),
+        frac("1","16")
+      ),
+      answer:7
+    },
+    {
+      id:"8.3",
+      math:eq(
+        power(par(frac("1","9")),"x+2"),
+        "81"
+      ),
+      answer:-4
+    },
+    {
+      id:"8.4",
+      math:eq(
+        power(par(frac("1","2")),"x-8"),
+        power("2","x")
+      ),
+      answer:4
+    },
+    {
+      id:"9.1",
+      math:eq(power("4","4x-13"),frac("1","64")),
+      answer:2.5
+    },
+    {
+      id:"9.2",
+      math:eq(power(par(frac("1","5")),"3x+7"),"25"),
+      answer:-3
+    },
+    {
+      id:"9.3",
+      math:eq(
+        power(par(frac("1","3")),"x+4"),
+        power("81","x")
+      ),
+      answer:-0.8
+    },
+    {
+      id:"9.4",
+      math:eq(power("81","x-6"),frac("1","9")),
+      answer:5.5
+    }
+  ]
+},
+{
+  id:"log",
+  title:"Логарифмические уравнения",
+  tasks:[
+    {
+      id:"10.1",
+      math:eq(log(2,"x+3"),log(2,"9")),
+      answer:6
+    },
+    {
+      id:"10.2",
+      math:eq(log(5,"10-x"),log(5,"2")),
+      answer:8
+    },
+    {
+      id:"10.3",
+      math:eq(log(3,"x+2"),"2"),
+      answer:7
+    },
+    {
+      id:"10.4",
+      math:eq(log(2,"x-3"),"4"),
+      answer:19
+    },
+    {
+      id:"11.1",
+      math:eq(log(2,"5x-3"),"4"),
+      answer:3.8
+    },
+    {
+      id:"11.2",
+      math:eq(log(4,"-11+3x"),"3"),
+      answer:25
+    },
+    {
+      id:"11.3",
+      math:eq(log(3,"-4x-5"),"2"),
+      answer:-3.5
+    },
+    {
+      id:"11.4",
+      math:eq(log(5,"13-2x"),"2"),
+      answer:-6
+    },
+    {
+      id:"11.5",
+      math:eq(
+        power("4",log(16,"3x+4")),
+        "16"
+      ),
+      answer:84
+    },
+    {
+      id:"11.6",
+      math:eq(
+        log(8,power("2","4x-9")),
+        "3"
+      ),
+      answer:4.5
+    }
+  ]
+}
+];
+
+const allTasks = groups.flatMap(g => g.tasks);
+
+const checked = {};
+const drafts = {};
+
+function parseAnswer(value) {
+  const text = value.trim()
+    .replace(/\s/g,"")
+    .replace(/,/g,".")
+    .replace(/−/g,"-");
+
+  if (!text) return NaN;
+
+  if (/^[+-]?\d+(\.\d+)?$/.test(text)) {
+    return Number(text);
+  }
+
+  if (/^[+-]?\d+(\.\d+)?\/[+-]?\d+(\.\d+)?$/.test(text)) {
+    const [a,b] = text.split("/").map(Number);
+    return b === 0 ? NaN : a/b;
+  }
+
+  return NaN;
+}
+
+function render() {
+  const container = document.getElementById("tasksContainer");
+  const filter = document.getElementById("topicFilter").value;
+
+  container.innerHTML = "";
+
+  groups.forEach(group => {
+    if (filter !== "all" && filter !== group.id) return;
+
+    const heading = document.createElement("h2");
+    heading.className = "section-title";
+    heading.textContent = group.title;
+    container.appendChild(heading);
+
+    const grid = document.createElement("div");
+    grid.className = "grid";
+
+    group.tasks.forEach(task => {
+      const card = document.createElement("article");
+      card.className = "problem glass";
+      card.id = "card-" + task.id;
+
+      card.innerHTML = `
+        <div class="problem-top">
+          <span class="number">№ ${task.id}</span>
+          <span class="type-label">Найдите корень</span>
+        </div>
+
+        <div class="equation">
+          ${task.math}
+        </div>
+
+        <div class="answer-row">
+          <input
+            class="answer-input"
+            id="input-${task.id}"
+            placeholder="Ваш ответ"
+            inputmode="decimal"
+            autocomplete="off"
+            aria-label="Ответ к заданию ${task.id}"
+          >
+          <button class="btn btn-primary"
+                  data-check="${task.id}">
+            Проверить
+          </button>
+        </div>
+
+        <div class="feedback"
+             id="feedback-${task.id}"
+             aria-live="polite"></div>
+      `;
+
+      grid.appendChild(card);
+    });
+
+    container.appendChild(grid);
+  });
+
+  document.querySelectorAll(".answer-input").forEach(input => {
+    const id = input.id.replace("input-","");
+
+    input.value = drafts[id] || "";
+
+    if (checked[id]) updateCard(id);
+
+    input.addEventListener("input", () => {
+      drafts[id] = input.value;
+
+      // Убираем предыдущий статус при редактировании
+      delete checked[id];
+
+      const card = document.getElementById("card-" + id);
+      card.classList.remove("correct","wrong");
+
+      document.getElementById("feedback-" + id)
+        .textContent = "";
+
+      updateStats();
+    });
+
+    input.addEventListener("keydown", event => {
+      if (event.key === "Enter") checkTask(id);
+    });
+  });
+
+  document.querySelectorAll("[data-check]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      checkTask(btn.dataset.check);
+    });
+  });
+}
+
+function checkTask(id) {
+  const task = allTasks.find(t => t.id === id);
+  const input = document.getElementById("input-" + id);
+
+  if (!task || !input) return;
+
+  const value = parseAnswer(input.value);
+
+  if (!Number.isFinite(value)) {
+    const feedback = document.getElementById("feedback-" + id);
+    feedback.textContent =
+      "Введите число, например 2,5 или 5/2.";
+    return;
+  }
+
+  const correct = Math.abs(value-task.answer) < 1e-8;
+
+  drafts[id] = input.value;
+  checked[id] = { correct };
+
+  updateCard(id);
+  updateStats();
+}
+
+function updateCard(id) {
+  const card = document.getElementById("card-" + id);
+  const feedback = document.getElementById("feedback-" + id);
+  const record = checked[id];
+
+  if (!card || !feedback || !record) return;
+
+  card.classList.remove("correct","wrong");
+  card.classList.add(record.correct ? "correct" : "wrong");
+
+  feedback.textContent = record.correct
+    ? "✓ Правильно!"
+    : "✕ Неверно. Попробуй ещё раз.";
+}
+
+function updateStats() {
+  const solved = Object.keys(checked).length;
+  const correct = Object.values(checked)
+    .filter(record => record.correct).length;
+
+  document.getElementById("totalCount").textContent =
+    allTasks.length;
+
+  document.getElementById("solvedCount").textContent =
+    solved;
+
+  document.getElementById("correctCount").textContent =
+    correct;
+
+  document.getElementById("progressFill").style.width =
+    (solved/allTasks.length*100) + "%";
+
+  const result = document.getElementById("finalResult");
+
+  if (solved === allTasks.length) {
+    result.style.display = "block";
+
+    document.getElementById("resultTitle").textContent =
+      `Результат: ${correct} из ${allTasks.length}`;
+
+    const percent = correct/allTasks.length*100;
+
+    let message = "Продолжай тренироваться!";
+
+    if (percent === 100) {
+      message = "Отлично! Все уравнения решены верно.";
+    } else if (percent >= 80) {
+      message = "Очень хороший результат!";
+    } else if (percent >= 50) {
+      message = "Хорошее начало. Повтори сложные типы.";
+    }
+
+    document.getElementById("resultDescription").textContent =
+      message;
+
+  } else {
+    result.style.display = "none";
+  }
+}
+
+document.getElementById("topicFilter")
+  .addEventListener("change",render);
+
+document.getElementById("checkAll")
+  .addEventListener("click",() => {
+    document.querySelectorAll(".answer-input")
+      .forEach(input => {
+        if (input.value.trim()) {
+          checkTask(input.id.replace("input-",""));
+        }
+      });
+  });
+
+document.getElementById("resetAll")
+  .addEventListener("click",() => {
+    if (!confirm("Начать заново и сбросить ответы?")) return;
+
+    Object.keys(checked).forEach(k => delete checked[k]);
+    Object.keys(drafts).forEach(k => delete drafts[k]);
+
+    document.getElementById("topicFilter").value = "all";
+
+    render();
+    updateStats();
+    window.scrollTo({top:0,behavior:"smooth"});
+  });
+
+render();
+updateStats();
+</script>
+
+</body>
+</html>
